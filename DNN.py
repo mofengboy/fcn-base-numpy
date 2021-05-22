@@ -42,8 +42,11 @@ class Mnist:
         self.Test = Test
 
     # 批量获取训练数据集
-    def getBatchTrain(self, batch_size=16, offset=0):
-        data = self.Train
+    def getBatchTrain(self, is_train=True, batch_size=16, offset=0):
+        if is_train:
+            data = self.Train
+        else:
+            data = self.Test
         X = []
         Y = []
         y_temp = np.eye(10)
@@ -118,7 +121,7 @@ class Mnist:
     def dev(self):
         acc_arr = []
         for i in range(len(self.Test) // 10000):
-            X, Y = self.getBatchTrain(batch_size=10000, offset=i * 10000)
+            X, Y = self.getBatchTrain(is_train=False, batch_size=10000, offset=i * 10000)
             y_true = np.argmax(Y, axis=0)
             test_acc = self.getAcc(X, y_true)
             acc_arr.append(test_acc)
@@ -171,8 +174,8 @@ if __name__ == '__main__':
     batch_size = 128
 
     mnist = Mnist("data/mnist_all.mat")
-    mnist.initParam()
-    mnist.train(epoch, batch_size, lr)
+    # mnist.initParam()
+    # mnist.train(epoch, batch_size, lr)
     # mnist.saveModel("model3.para")
-    # mnist.loadModel("model1.para")
+    mnist.loadModel("model1.para")
     mnist.dev()
